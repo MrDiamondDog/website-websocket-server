@@ -1,7 +1,50 @@
 import fs from "fs";
 import { WebSocketServer } from "ws";
 
-import { getNewState, State } from "@/lib/words";
+const standardKeys =
+    "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ";
+
+type State = {
+    content: string;
+    shift: boolean;
+    capsLock: boolean;
+}
+
+function getNewState(state: State, key: string) {
+    const newState = { ...state };
+
+    key = key.toLowerCase().trim();
+
+    if (key === "shift")
+        newState.shift = !state.shift;
+
+    if (key === "caps") {
+        newState.capsLock = !state.capsLock;
+        newState.shift = newState.capsLock;
+    }
+
+    if (key === "tab")
+        newState.content += "    ";
+
+    if (key === "enter")
+        newState.content += "\n";
+
+    if (key === "space")
+        newState.content += " ";
+
+    if (standardKeys.includes(key)) {
+        newState.content += state.shift ? key.toUpperCase() : key;
+
+        if (!state.capsLock && state.shift)
+            newState.shift = false;
+
+        if (state.capsLock && !state.shift)
+            newState.shift = true;
+    }
+
+    return newState;
+}
+
 
 const wss = new WebSocketServer({ port: 8080 });
 
