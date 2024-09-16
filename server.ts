@@ -89,8 +89,9 @@ wss.addListener("connection", ws => {
             ratelimits[ws._socket.remoteAddress] = new Date();
         }
     });
+    // time until ratelimit ends
     // @ts-ignore
-    const time = ratelimits[ws._socket.remoteAddress] ? ratelimit - (new Date().getTime() - ratelimits[ws._socket.remoteAddress].getTime()) : 0;
-    ws.send(JSON.stringify({ type: "state", state: getState(), ratelimit: time === 0 ? undefined : time }));
+    const time = ratelimits[ws._socket.remoteAddress] ? new Date().getTime() - ratelimits[ws._socket.remoteAddress].getTime() : 0;
+    ws.send(JSON.stringify({ type: "state", state: getState(), ratelimit: time === 0 || time >= ratelimit ? undefined : time }));
     console.log("+ Connection");
 });
