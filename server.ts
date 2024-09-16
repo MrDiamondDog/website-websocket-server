@@ -75,13 +75,7 @@ wss.addListener("connection", ws => {
 
         if (!data.type) return;
 
-        if (data.type === "get-state") {
-            // @ts-ignore
-            const time = ratelimits[ws._socket.remoteAddress] ? ratelimit - (new Date().getTime() - ratelimits[ws._socket.remoteAddress].getTime()) : 0;
-
-            ws.send(JSON.stringify({ type: "state", state: getState(), ratelimit: time === 0 ? undefined : time }));
-        }
-        else if (data.type === "key") {
+        if (data.type === "key") {
             if (!data.key) return;
             const { key } = data;
 
@@ -95,6 +89,8 @@ wss.addListener("connection", ws => {
             ratelimits[ws._socket.remoteAddress] = new Date();
         }
     });
-    ws.send(JSON.stringify({ type: "state", state: getState() }));
+    // @ts-ignore
+    const time = ratelimits[ws._socket.remoteAddress] ? ratelimit - (new Date().getTime() - ratelimits[ws._socket.remoteAddress].getTime()) : 0;
+    ws.send(JSON.stringify({ type: "state", state: getState(), ratelimit: time === 0 ? undefined : time }));
     console.log("+ Connection");
 });
