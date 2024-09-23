@@ -14,6 +14,7 @@ type Stroke = {
     color: string;
     size: number;
     eraser?: boolean;
+    owner: string;
 }
 
 type ShapeStroke = {
@@ -25,6 +26,7 @@ type ShapeStroke = {
     size: number;
     shape: Shape;
     fill?: boolean;
+    owner: string;
 }
 
 interface Room {
