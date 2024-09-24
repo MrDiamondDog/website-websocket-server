@@ -2,7 +2,8 @@
   "name": "websocket-server",
   "version": "1.0.0",
   "scripts": {
-    "start": "nodemon --exec \"tsx index.ts\" --ext ts"
+    "dev": "nodemon --exec \"tsx index.ts\" --ext ts",
+    "start": "tsx index.ts"
   },
   "keywords": [],
   "dependencies": {
